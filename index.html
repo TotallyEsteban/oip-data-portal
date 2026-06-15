@@ -91,7 +91,7 @@ input:focus{border-color:#c9a84c}
 
 <div id="login">
   <div class="card">
-    <div class="eyebrow">OIP · Ocala Innovation Partners Data</div>
+    <div class="eyebrow">OIP · VOLTAGE EXPERIENTIAL</div>
     <div class="title">DATA PORTAL</div>
     <div class="sub">Secure client access — authorized users only</div>
     <label>Email / Access Code</label>
@@ -100,7 +100,7 @@ input:focus{border-color:#c9a84c}
     <input id="pw" type="password" placeholder="enter license key">
     <button class="btn" id="loginbtn">ACCESS PORTAL</button>
     <div class="err" id="err">Invalid credentials. Contact Steve Sloan (407) 569-5117</div>
-    <div class="foot">Ocala Innovation Partners · oipdata.com<br>Proprietary &amp; Confidential</div>
+    <div class="foot">Ocala Innovation Partners · voltageprovenance.com<br>Proprietary &amp; Confidential</div>
   </div>
 </div>
 
@@ -198,6 +198,20 @@ var CLIENTS = {
     tier:"TIER 2 IT/MSP", tierDesc:"8,400+ FL SMBs",
     renewal:"2026-07-15", segments:["msp","alarm","saas_all"],
     totalRecords:21890
+  },
+
+  // Andy & Jasper — Roofing, Cleanouts, Home Building, Demo/Tear Outs
+  // Central FL: Marion, Lake, Orange, Seminole, Sumter, Volusia, Alachua
+  "demo@contractorfl.com": {
+    pass:"contractor2026",
+    name:"Andy & Jasper",
+    company:"Central FL Contractor Network",
+    tier:"CONTRACTOR INTELLIGENCE",
+    tierDesc:"Roofing · Cleanouts · Home Building · Demo — Central FL 7-County Region",
+    renewal:"Demo Access",
+    segments:["muniscore_contractor","prop_mgmt","ins_agents","pc_insurance",
+              "developers","cre_all","hard_money","prop_tax","real_estate_inv","biz_brokers"],
+    totalRecords:32743
   }
 };
 
@@ -220,7 +234,15 @@ var SEGS = [
   {id:"physicians",name:"Physicians & Medical Clinics",tag:"daas",n:"10,729",d:"FL medical practices. Corporate health account pipeline."},
   {id:"gc",name:"General Contractors",tag:"daas",n:"16,075",d:"FL GC firms. Commercial developer direct contacts."},
   {id:"pawn",name:"Pawn Shops & Coin Dealers",tag:"vp",n:"1,847",d:"VP Platform authentication + buyer contacts."},
-  {id:"auctions",name:"Auction Houses & Estate Sales",tag:"vp",n:"2,103",d:"Blockchain lot certification + buyer database."}
+  {id:"auctions",name:"Auction Houses & Estate Sales",tag:"vp",n:"2,103",d:"Blockchain lot certification + buyer database."},
+
+  // CONTRACTOR SEGMENTS
+  {id:"muniscore_contractor",name:"MuniScore — Structural & Roof Violations",tag:"muni",n:"4,847",
+   d:"Active FL code enforcement cases: roof deterioration, structural failures, property maintenance. Marion, Lake, Orange, Seminole, Sumter, Volusia, Alachua counties. These owners HAVE to fix it."},
+  {id:"real_estate_inv",name:"Real Estate Investors & Agents (Central FL)",tag:"daas",n:"8,401",
+   d:"Flippers, buy-and-hold investors, listing agents in your 7-county region. All need roofing, cleanout, demo, or renovation work."},
+  {id:"prop_mgmt_contractor",name:"Property Management — HOAs & Complexes",tag:"daas",n:"2,103",
+   d:"HOA operators, apartment complexes, commercial property managers. Ongoing maintenance contracts for roofing, cleanouts, and capital improvements."}
 ];
 
 var SAMPLES = {
@@ -244,6 +266,20 @@ var SAMPLES = {
     {First:"Marcus",Last:"Brown",Title:"Founder",Company:"GrowthStack Software",Email:"mbrown@growthstack.com",City:"Orlando"},
     {First:"Rachel",Last:"Kim",Title:"CRO",Company:"Vertex Analytics",Email:"rkim@vertexanalytics.com",City:"Jacksonville"},
     {First:"Sean",Last:"Murphy",Title:"CEO",Company:"Nexus SaaS Group",Email:"smurphy@nexussaas.com",City:"Boca Raton"}
+  ],
+  muniscore_contractor:[
+    {First:"Robert",Last:"Hendricks",Title:"Owner",Company:"Hendricks Properties LLC",Email:"rhendricks@hendricksprop.com",City:"Ocala",County:"Marion",Violation:"Roof Deterioration",Status:"Active"},
+    {First:"Maria",Last:"Santos",Title:"Property Owner",Company:"Santos Rental Properties",Email:"msantos@santosrentals.com",City:"Leesburg",County:"Lake",Violation:"Structural Maintenance",Status:"Active"},
+    {First:"James",Last:"Whitfield",Title:"Owner",Company:"Whitfield Commercial LLC",Email:"jwhitfield@whitfieldllc.com",City:"Orlando",County:"Orange",Violation:"Roof Citation",Status:"Active"},
+    {First:"Patricia",Last:"Dunmore",Title:"Trustee",Company:"Dunmore Family Trust",Email:"pdunmore@dunmoretrust.com",City:"Sanford",County:"Seminole",Violation:"Property Maintenance",Status:"Active"},
+    {First:"Carlos",Last:"Rivera",Title:"Owner",Company:"Rivera Investment Properties",Email:"crivera@riverainvest.com",City:"The Villages",County:"Sumter",Violation:"Roof Deterioration",Status:"Active"}
+  ],
+  real_estate_inv:[
+    {First:"David",Last:"Paulson",Title:"Investor",Company:"Paulson Property Group",Email:"dpaulson@paulsonproperty.com",City:"Ocala",County:"Marion",Focus:"Fix & Flip"},
+    {First:"Jennifer",Last:"Moore",Title:"Owner",Company:"Moore Realty Investments",Email:"jmoore@moorerealty.com",City:"Gainesville",County:"Alachua",Focus:"Buy & Hold"},
+    {First:"Michael",Last:"Tran",Title:"Principal",Company:"Central FL Property Fund",Email:"mtran@cflpropertyfund.com",City:"Kissimmee",County:"Orange",Focus:"Multi-Family"},
+    {First:"Susan",Last:"Garrett",Title:"Broker/Owner",Company:"Garrett Real Estate Group",Email:"sgarrett@garrettregroup.com",City:"DeLand",County:"Volusia",Focus:"Residential"},
+    {First:"Thomas",Last:"Abrams",Title:"Investor",Company:"Abrams Capital Properties",Email:"tabrams@abramscap.com",City:"Eustis",County:"Lake",Focus:"Commercial Flip"}
   ]
 };
 
