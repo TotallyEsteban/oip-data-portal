@@ -3,664 +3,170 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OIP Data Portal — Client Access</title>
-<!-- CLIENT CONFIG — edit this section to add/change clients -->
+<title>OIP Data Portal</title>
 <style>
-  :root {
-    --void:     #0A0A0A;
-    --panel:    #111111;
-    --panel2:   #161616;
-    --border:   #222222;
-    --border2:  #2A2A2A;
-    --gold:     #C9A84C;
-    --gold-dim: #7A6020;
-    --gold-bg:  #1A1500;
-    --text:     #E8E8E8;
-    --muted:    #666666;
-    --muted2:   #444444;
-    --green:    #2ECC71;
-    --green-bg: #0A1F12;
-    --red:      #E74C3C;
-    --mono:     'Courier New', 'Courier', monospace;
-    --sans:     system-ui, -apple-system, sans-serif;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--void);
-    color: var(--text);
-    font-family: var(--sans);
-    min-height: 100vh;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
-    pointer-events: none;
-    z-index: 9999;
-  }
-
-  /* ── LOGIN ───────────────────────────────────── */
-  #login-screen {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 24px;
-  }
-
-  .login-card {
-    width: 100%;
-    max-width: 440px;
-    border: 1px solid var(--border2);
-    background: var(--panel);
-    padding: 48px 40px;
-  }
-
-  .login-eyebrow {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--gold);
-    margin-bottom: 8px;
-  }
-
-  .login-title {
-    font-family: var(--mono);
-    font-size: 22px;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-
-  .login-sub {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 40px;
-  }
-
-  .field-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 2px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    display: block;
-  }
-
-  .field-input {
-    width: 100%;
-    background: var(--void);
-    border: 1px solid var(--border2);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 14px;
-    padding: 12px 16px;
-    margin-bottom: 20px;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-
-  .field-input:focus { border-color: var(--gold); }
-
-  .login-btn {
-    width: 100%;
-    background: var(--gold);
-    border: none;
-    color: var(--void);
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: bold;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 14px;
-    cursor: pointer;
-    transition: background 0.15s;
-    margin-top: 8px;
-  }
-
-  .login-btn:hover { background: #E0B84E; }
-
-  .login-error {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--red);
-    margin-top: 16px;
-    display: none;
-    padding: 10px 14px;
-    border: 1px solid #4A1010;
-    background: #1A0808;
-    line-height: 1.6;
-  }
-
-  .login-footer {
-    margin-top: 32px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted2);
-    text-align: center;
-    line-height: 1.8;
-  }
-
-  /* ── DASHBOARD ───────────────────────────────── */
-  #dashboard { display: none; min-height: 100vh; }
-
-  .topbar {
-    background: var(--panel);
-    border-bottom: 1px solid var(--border);
-    padding: 0 32px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .topbar-brand {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--gold);
-    letter-spacing: 2px;
-  }
-
-  .topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-  }
-
-  .topbar-user {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  .topbar-user span { color: var(--text); }
-
-  .logout-btn {
-    background: none;
-    border: 1px solid var(--border2);
-    color: var(--muted);
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 6px 14px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .logout-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
-
-  .dashboard-body {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    min-height: calc(100vh - 56px);
-  }
-
-  /* ── SIDEBAR ──────────────────────────────────── */
-  .sidebar {
-    background: var(--panel);
-    border-right: 1px solid var(--border);
-    padding: 32px 24px;
-    position: sticky;
-    top: 56px;
-    height: calc(100vh - 56px);
-    overflow-y: auto;
-  }
-
-  .sidebar-section { margin-bottom: 32px; }
-
-  .sidebar-label {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 3px;
-    color: var(--gold-dim);
-    text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-
-  .tier-badge {
-    background: var(--gold-bg);
-    border: 1px solid var(--gold-dim);
-    padding: 16px;
-    margin-bottom: 16px;
-  }
-
-  .tier-name {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-
-  .tier-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
-
-  .stat-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .stat-row:last-child { border-bottom: none; }
-  .stat-label { font-family: var(--mono); font-size: 11px; color: var(--muted); }
-  .stat-value { font-family: var(--mono); font-size: 13px; color: var(--text); font-weight: bold; }
-  .stat-value.gold { color: var(--gold); }
-  .stat-value.green { color: var(--green); }
-
-  .status-dot {
-    display: inline-block;
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    margin-right: 6px;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-  .sidebar-contact {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    line-height: 2;
-  }
-
-  .sidebar-contact a { color: var(--gold); text-decoration: none; }
-
-  /* ── MAIN ────────────────────────────────────── */
-  .main-content { padding: 36px 40px; background: var(--void); }
-
-  .main-header { margin-bottom: 32px; }
-
-  .welcome-line {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 1px;
-    margin-bottom: 6px;
-  }
-
-  .main-title {
-    font-family: var(--mono);
-    font-size: 20px;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-
-  .record-counter { font-family: var(--mono); font-size: 13px; color: var(--muted); }
-  .record-counter .count { color: var(--gold); font-size: 18px; }
-
-  .section-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--gold-dim);
-    text-transform: uppercase;
-    margin-bottom: 16px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  /* ── SEGMENT GRID ────────────────────────────── */
-  .segment-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 12px;
-    margin-bottom: 40px;
-  }
-
-  .segment-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    padding: 20px;
-    transition: border-color 0.15s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .segment-card:hover { border-color: var(--gold-dim); }
-
-  .segment-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 2px; height: 100%;
-    background: var(--gold);
-    opacity: 0;
-    transition: opacity 0.15s;
-  }
-
-  .segment-card:hover::before { opacity: 1; }
-
-  .seg-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-  }
-
-  .seg-name {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--text);
-    font-weight: bold;
-    line-height: 1.3;
-  }
-
-  .seg-tag {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border: 1px solid;
-    white-space: nowrap;
-    margin-left: 8px;
-    flex-shrink: 0;
-  }
-
-  .seg-tag.muniscore { color:#E67E22; border-color:#7A3F10; background:#1A0E08; }
-  .seg-tag.daas      { color:var(--gold); border-color:var(--gold-dim); background:var(--gold-bg); }
-  .seg-tag.vp        { color:#9B59B6; border-color:#5B2C6F; background:#100A16; }
-
-  .seg-count { font-family:var(--mono); font-size:22px; color:var(--gold); margin-bottom:4px; }
-  .seg-desc  { font-size:12px; color:var(--muted); line-height:1.5; margin-bottom:16px; }
-
-  .seg-actions { display:flex; gap:8px; }
-
-  .btn-download {
-    flex: 1;
-    background: var(--void);
-    border: 1px solid var(--border2);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 9px 12px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .btn-download:hover { background:var(--gold-bg); border-color:var(--gold); color:var(--gold); }
-
-  .btn-preview {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 9px 14px;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
-  }
-
-  .btn-preview:hover { border-color:var(--border2); color:var(--text); }
-
-  .locked-overlay {
-    position: absolute; inset: 0;
-    background: rgba(10,10,10,0.88);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 8px;
-  }
-
-  .locked-icon  { font-size:20px; opacity:0.3; }
-  .locked-text  { font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:1px; }
-  .upgrade-link { font-family:var(--mono); font-size:10px; color:var(--gold); text-decoration:none; letter-spacing:1px; }
-
-  /* ── ACTIVITY TABLE ──────────────────────────── */
-  .activity-table { width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12px; }
-
-  .activity-table th {
-    text-align:left; padding:10px 16px;
-    font-size:9px; letter-spacing:2px; text-transform:uppercase;
-    color:var(--muted); border-bottom:1px solid var(--border);
-    background:var(--panel);
-  }
-
-  .activity-table td { padding:12px 16px; border-bottom:1px solid var(--border); color:var(--text); }
-  .activity-table tr:hover td { background:var(--panel2); }
-  .activity-table td.muted { color:var(--muted); }
-  .activity-table td.gold  { color:var(--gold); }
-
-  /* ── MODAL ───────────────────────────────────── */
-  .modal-overlay {
-    position:fixed; inset:0;
-    background:rgba(0,0,0,0.85);
-    z-index:1000; display:none;
-    align-items:center; justify-content:center;
-    padding:24px;
-  }
-
-  .modal-overlay.active { display:flex; }
-
-  .modal {
-    background:var(--panel);
-    border:1px solid var(--border2);
-    width:100%; max-width:780px;
-    max-height:80vh;
-    display:flex; flex-direction:column;
-  }
-
-  .modal-header {
-    padding:20px 24px;
-    border-bottom:1px solid var(--border);
-    display:flex; justify-content:space-between; align-items:center;
-  }
-
-  .modal-title { font-family:var(--mono); font-size:13px; color:var(--gold); letter-spacing:1px; }
-  .modal-close { background:none; border:none; color:var(--muted); font-size:20px; cursor:pointer; }
-  .modal-close:hover { color:var(--text); }
-
-  .modal-body { overflow-y:auto; padding:20px 24px; overflow-x:auto; }
-
-  .preview-note {
-    font-family:var(--mono); font-size:11px; color:var(--muted);
-    margin-bottom:16px;
-  }
-
-  .preview-table { width:100%; border-collapse:collapse; font-family:var(--mono); font-size:11px; }
-
-  .preview-table th {
-    text-align:left; padding:8px 12px;
-    background:var(--void); color:var(--gold);
-    font-size:9px; letter-spacing:1px; text-transform:uppercase;
-    border-bottom:1px solid var(--border); white-space:nowrap;
-  }
-
-  .preview-table td {
-    padding:9px 12px; border-bottom:1px solid var(--border);
-    color:var(--text); white-space:nowrap;
-    max-width:200px; overflow:hidden; text-overflow:ellipsis;
-  }
-
-  .preview-table tr:nth-child(even) td { background:var(--panel2); }
-
-  .modal-footer {
-    padding:16px 24px;
-    border-top:1px solid var(--border);
-    display:flex; gap:12px; justify-content:flex-end;
-  }
-
-  /* ── TOAST ───────────────────────────────────── */
-  .toast {
-    position:fixed; bottom:32px; right:32px;
-    background:var(--panel); border:1px solid var(--border2);
-    border-left:3px solid var(--gold);
-    padding:14px 20px; font-family:var(--mono); font-size:12px;
-    color:var(--text); z-index:9998; max-width:340px;
-    transform:translateY(80px); opacity:0; transition:all 0.25s;
-  }
-
-  .toast.show { transform:translateY(0); opacity:1; }
-
-  @media (max-width:768px) {
-    .dashboard-body { grid-template-columns:1fr; }
-    .sidebar { position:static; height:auto; }
-    .main-content { padding:24px 20px; }
-    .topbar { padding:0 20px; }
-    .segment-grid { grid-template-columns:1fr; }
-  }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0a;color:#e8e8e8;font-family:system-ui,sans-serif;min-height:100vh}
+#login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.card{background:#111;border:1px solid #2a2a2a;padding:48px 40px;width:100%;max-width:420px}
+.eyebrow{font-family:monospace;font-size:10px;letter-spacing:3px;color:#c9a84c;margin-bottom:8px}
+.title{font-family:monospace;font-size:22px;color:#e8e8e8;margin-bottom:4px}
+.sub{font-family:monospace;font-size:12px;color:#666;margin-bottom:36px}
+label{font-family:monospace;font-size:10px;letter-spacing:2px;color:#666;text-transform:uppercase;display:block;margin-bottom:8px}
+input{width:100%;background:#0a0a0a;border:1px solid #2a2a2a;color:#e8e8e8;font-family:monospace;font-size:14px;padding:12px 16px;margin-bottom:20px;outline:none}
+input:focus{border-color:#c9a84c}
+.btn{width:100%;background:#c9a84c;border:none;color:#0a0a0a;font-family:monospace;font-size:12px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;padding:14px;cursor:pointer;margin-top:4px}
+.btn:hover{background:#e0b84e}
+.err{display:none;font-family:monospace;font-size:12px;color:#e74c3c;margin-top:16px;padding:10px;border:1px solid #4a1010;background:#1a0808;line-height:1.6}
+.foot{margin-top:28px;padding-top:20px;border-top:1px solid #222;font-family:monospace;font-size:11px;color:#333;text-align:center;line-height:1.8}
+#dash{display:none}
+.topbar{background:#111;border-bottom:1px solid #222;height:56px;padding:0 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99}
+.brand{font-family:monospace;font-size:13px;color:#c9a84c;letter-spacing:2px}
+.logout{background:none;border:1px solid #2a2a2a;color:#666;font-family:monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;cursor:pointer}
+.logout:hover{border-color:#c9a84c;color:#c9a84c}
+.body{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 56px)}
+.sidebar{background:#111;border-right:1px solid #222;padding:28px 20px;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
+.slbl{font-family:monospace;font-size:9px;letter-spacing:3px;color:#7a6020;text-transform:uppercase;margin-bottom:14px}
+.tier-box{background:#1a1500;border:1px solid #7a6020;padding:14px;margin-bottom:24px}
+.tier-name{font-family:monospace;font-size:11px;letter-spacing:1px;color:#c9a84c;margin-bottom:4px}
+.tier-desc{font-size:12px;color:#666;line-height:1.5}
+.srow{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid #1a1a1a}
+.srow:last-child{border-bottom:none}
+.sk{font-family:monospace;font-size:11px;color:#666}
+.sv{font-family:monospace;font-size:12px;color:#e8e8e8;font-weight:bold}
+.sv.g{color:#c9a84c}.sv.gr{color:#2ecc71}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#2ecc71;margin-right:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.contact{font-family:monospace;font-size:11px;color:#666;line-height:2}
+.contact a{color:#c9a84c;text-decoration:none}
+.main{padding:36px 40px;background:#0a0a0a}
+.wline{font-family:monospace;font-size:11px;color:#666;letter-spacing:1px;margin-bottom:6px}
+.mtitle{font-family:monospace;font-size:20px;margin-bottom:8px}
+.rcount{font-family:monospace;font-size:13px;color:#666;margin-bottom:32px}
+.rcount .num{color:#c9a84c;font-size:18px}
+.seclbl{font-family:monospace;font-size:10px;letter-spacing:3px;color:#7a6020;text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #1a1a1a}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:36px}
+.seg{background:#111;border:1px solid #1a1a1a;padding:18px;position:relative;overflow:hidden;transition:border-color .15s}
+.seg:hover{border-color:#7a6020}
+.seg-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.seg-name{font-family:monospace;font-size:13px;font-weight:bold;line-height:1.3}
+.tag{font-family:monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:3px 7px;border:1px solid;margin-left:8px;flex-shrink:0}
+.tag.daas{color:#c9a84c;border-color:#7a6020;background:#1a1500}
+.tag.muni{color:#e67e22;border-color:#7a3f10;background:#1a0e08}
+.tag.vp{color:#9b59b6;border-color:#5b2c6f;background:#100a16}
+.seg-num{font-family:monospace;font-size:22px;color:#c9a84c;margin-bottom:4px}
+.seg-desc{font-size:12px;color:#666;line-height:1.5;margin-bottom:14px}
+.seg-btns{display:flex;gap:8px}
+.dl-btn{flex:1;background:#0a0a0a;border:1px solid #2a2a2a;color:#e8e8e8;font-family:monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:9px;cursor:pointer;transition:all .15s}
+.dl-btn:hover{background:#1a1500;border-color:#c9a84c;color:#c9a84c}
+.prev-btn{background:none;border:1px solid #1a1a1a;color:#666;font-family:monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:9px 12px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.prev-btn:hover{border-color:#2a2a2a;color:#e8e8e8}
+.lock{position:absolute;inset:0;background:rgba(10,10,10,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.lock-txt{font-family:monospace;font-size:11px;color:#666;letter-spacing:1px}
+.up-link{font-family:monospace;font-size:10px;color:#c9a84c;text-decoration:none}
+.atbl{width:100%;border-collapse:collapse;font-family:monospace;font-size:12px}
+.atbl th{text-align:left;padding:9px 14px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#666;border-bottom:1px solid #1a1a1a;background:#111}
+.atbl td{padding:11px 14px;border-bottom:1px solid #1a1a1a;color:#e8e8e8}
+.atbl td.m{color:#666}.atbl td.g{color:#c9a84c}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:none;align-items:center;justify-content:center;padding:24px}
+.modal.on{display:flex}
+.mbox{background:#111;border:1px solid #2a2a2a;width:100%;max-width:740px;max-height:82vh;display:flex;flex-direction:column}
+.mhdr{padding:18px 22px;border-bottom:1px solid #1a1a1a;display:flex;justify-content:space-between;align-items:center}
+.mtitl{font-family:monospace;font-size:13px;color:#c9a84c;letter-spacing:1px}
+.mcls{background:none;border:none;color:#666;font-size:20px;cursor:pointer;line-height:1}
+.mcls:hover{color:#e8e8e8}
+.mbdy{overflow:auto;padding:20px 22px}
+.mftr{padding:14px 22px;border-top:1px solid #1a1a1a;display:flex;gap:10px;justify-content:flex-end}
+.ptbl{width:100%;border-collapse:collapse;font-family:monospace;font-size:11px}
+.ptbl th{text-align:left;padding:8px 10px;background:#0a0a0a;color:#c9a84c;font-size:9px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid #1a1a1a;white-space:nowrap}
+.ptbl td{padding:8px 10px;border-bottom:1px solid #1a1a1a;color:#e8e8e8;white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis}
+.ptbl tr:nth-child(even) td{background:#161616}
+.pnote{font-family:monospace;font-size:11px;color:#666;margin-bottom:14px}
+.toast{position:fixed;bottom:28px;right:28px;background:#111;border:1px solid #2a2a2a;border-left:3px solid #c9a84c;padding:12px 18px;font-family:monospace;font-size:12px;color:#e8e8e8;z-index:300;transform:translateY(60px);opacity:0;transition:all .25s;max-width:320px}
+.toast.on{transform:translateY(0);opacity:1}
+@media(max-width:700px){.body{grid-template-columns:1fr}.sidebar{position:static;height:auto}.main{padding:20px}.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="login-screen">
-  <div class="login-card">
-    <div class="login-eyebrow">OIP · VOLTAGE EXPERIENTIAL</div>
-    <div class="login-title">DATA PORTAL</div>
-    <div class="login-sub">Secure client access — authorized users only</div>
-
-    <label class="field-label">Email / Access Code</label>
-    <input class="field-input" id="login-email" type="text"
-           placeholder="client@company.com" autocomplete="off">
-
-    <label class="field-label">License Key</label>
-    <input class="field-input" id="login-pass" type="password"
-           placeholder="••••••••••••">
-
-    <button class="login-btn" onclick="doLogin()">ACCESS PORTAL →</button>
-
-    <div class="login-error" id="login-error">
-      Invalid credentials. Contact your account manager to verify access.<br>
-      Steve Sloan · (407) 569-5117 · steve.localreach@gmail.com
-    </div>
-
-    <div class="login-footer">
-      Ocala Innovation Partners · voltageprovenance.com<br>
-      Proprietary &amp; Confidential · Authorized Access Only
-    </div>
+<div id="login">
+  <div class="card">
+    <div class="eyebrow">OIP · VOLTAGE EXPERIENTIAL</div>
+    <div class="title">DATA PORTAL</div>
+    <div class="sub">Secure client access — authorized users only</div>
+    <label>Email / Access Code</label>
+    <input id="em" type="text" placeholder="client@company.com" autocomplete="off">
+    <label>License Key</label>
+    <input id="pw" type="password" placeholder="enter license key">
+    <button class="btn" id="loginbtn">ACCESS PORTAL</button>
+    <div class="err" id="err">Invalid credentials. Contact Steve Sloan (407) 569-5117</div>
+    <div class="foot">Ocala Innovation Partners · voltageprovenance.com<br>Proprietary &amp; Confidential</div>
   </div>
 </div>
 
-<!-- DASHBOARD -->
-<div id="dashboard">
+<div id="dash">
   <div class="topbar">
-    <div class="topbar-brand">OIP // DATA PORTAL</div>
-    <div class="topbar-right">
-      <div class="topbar-user"><span id="topbar-name">—</span></div>
-      <button class="logout-btn" onclick="doLogout()">LOG OUT</button>
+    <div class="brand">OIP // DATA PORTAL</div>
+    <div style="display:flex;align-items:center;gap:20px">
+      <span style="font-family:monospace;font-size:11px;color:#666" id="uname"></span>
+      <button class="logout" id="logoutbtn">LOG OUT</button>
     </div>
   </div>
-
-  <div class="dashboard-body">
+  <div class="body">
     <div class="sidebar">
-      <div class="sidebar-section">
-        <div class="sidebar-label">License Tier</div>
-        <div class="tier-badge">
-          <div class="tier-name" id="tier-name">—</div>
-          <div class="tier-desc" id="tier-desc">—</div>
+      <div style="margin-bottom:24px">
+        <div class="slbl">License Tier</div>
+        <div class="tier-box">
+          <div class="tier-name" id="tname"></div>
+          <div class="tier-desc" id="tdesc"></div>
         </div>
       </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-label">Account Status</div>
-        <div class="stat-row">
-          <span class="stat-label">Status</span>
-          <span class="stat-value green"><span class="status-dot"></span>ACTIVE</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Renewal</span>
-          <span class="stat-value" id="renewal-date">—</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Downloads</span>
-          <span class="stat-value gold" id="dl-count">0</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Records licensed</span>
-          <span class="stat-value" id="sidebar-records">—</span>
-        </div>
+      <div style="margin-bottom:24px">
+        <div class="slbl">Account Status</div>
+        <div class="srow"><span class="sk">Status</span><span class="sv gr"><span class="dot"></span>ACTIVE</span></div>
+        <div class="srow"><span class="sk">Renewal</span><span class="sv" id="ren"></span></div>
+        <div class="srow"><span class="sk">Downloads</span><span class="sv g" id="dlc">0</span></div>
+        <div class="srow"><span class="sk">Records licensed</span><span class="sv" id="srec"></span></div>
       </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-label">Data Feed</div>
-        <div class="stat-row">
-          <span class="stat-label">Last updated</span>
-          <span class="stat-value">LIVE</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">New / night</span>
-          <span class="stat-value gold">500+</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Verification</span>
-          <span class="stat-value green">VERIFIED</span>
-        </div>
+      <div style="margin-bottom:24px">
+        <div class="slbl">Data Feed</div>
+        <div class="srow"><span class="sk">Status</span><span class="sv gr">LIVE</span></div>
+        <div class="srow"><span class="sk">New / night</span><span class="sv g">500+</span></div>
+        <div class="srow"><span class="sk">Verified</span><span class="sv gr">YES</span></div>
       </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-label">Support</div>
-        <div class="sidebar-contact">
+      <div>
+        <div class="slbl">Support</div>
+        <div class="contact">
           Steve Sloan<br>
           <a href="tel:4075695117">(407) 569-5117</a><br>
-          <a href="mailto:steve.localreach@gmail.com">steve.localreach@gmail.com</a><br>
-          <a href="https://voltageprovenance.com" target="_blank">voltageprovenance.com</a>
+          <a href="mailto:steve.localreach@gmail.com">steve.localreach@gmail.com</a>
         </div>
       </div>
     </div>
-
-    <div class="main-content">
-      <div class="main-header">
-        <div class="welcome-line">WELCOME BACK</div>
-        <div class="main-title" id="main-greeting">—</div>
-        <div class="record-counter">
-          Records in your license:&nbsp;
-          <span class="count" id="record-counter">0</span>
-          &nbsp;verified FL contacts
-        </div>
-      </div>
-
-      <div id="segments-container"></div>
-
-      <div class="section-label" style="margin-top:8px">DOWNLOAD HISTORY</div>
-      <table class="activity-table">
-        <thead>
-          <tr>
-            <th>Segment</th><th>Records</th><th>Format</th><th>Timestamp</th>
-          </tr>
-        </thead>
-        <tbody id="activity-log">
-          <tr>
-            <td class="muted" colspan="4">
-              No downloads yet — select a segment above to begin.
-            </td>
-          </tr>
-        </tbody>
+    <div class="main">
+      <div class="wline">WELCOME BACK</div>
+      <div class="mtitle" id="greet"></div>
+      <div class="rcount">Records in your license: <span class="num" id="rcnt">0</span> verified FL contacts</div>
+      <div id="segs"></div>
+      <div class="seclbl">DOWNLOAD HISTORY</div>
+      <table class="atbl">
+        <thead><tr><th>Segment</th><th>Records</th><th>Format</th><th>Time</th></tr></thead>
+        <tbody id="alog"><tr><td class="m" colspan="4">No downloads yet.</td></tr></tbody>
       </table>
     </div>
   </div>
 </div>
 
-<!-- PREVIEW MODAL -->
-<div class="modal-overlay" id="preview-modal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modal-title">SEGMENT PREVIEW</div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+<div class="modal" id="modal">
+  <div class="mbox">
+    <div class="mhdr">
+      <div class="mtitl" id="mtitl">PREVIEW</div>
+      <button class="mcls" id="mcls">X</button>
     </div>
-    <div class="modal-body" id="modal-content"></div>
-    <div class="modal-footer">
-      <button class="btn-preview" onclick="closeModal()">Close</button>
-      <button class="btn-download" id="modal-dl-btn">Download Full Dataset →</button>
+    <div class="mbdy" id="mbdy"></div>
+    <div class="mftr">
+      <button class="prev-btn" id="mclose2">Close</button>
+      <button class="dl-btn" id="mdl" style="flex:none;padding:9px 20px">Download Full Dataset</button>
     </div>
   </div>
 </div>
@@ -668,340 +174,220 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ── SEGMENT CATALOG ─────────────────────────────────────────
-// Full list of all OIP segments — display info only
-// Access control is in clients.js
-const ALL_SEGMENTS = [
-  {id:'private_equity', name:'Private Equity & VC Funds',       tag:'daas',      count:'2,847',  desc:'FL investment firms, family offices, VC funds. Revenue data + direct partner contact.'},
-  {id:'list_brokers',   name:'List Brokers & Data Resellers',   tag:'daas',      count:'1,204',  desc:'FL data resellers. Wholesale licensing targets — they resell to their own clients.'},
-  {id:'mktg_platforms', name:'Marketing Automation Platforms',  tag:'daas',      count:'3,891',  desc:'CRM and marketing platform companies. API data feed prospects — highest enterprise value.'},
-  {id:'recruit_plat',   name:'Recruiting Platforms',            tag:'daas',      count:'2,156',  desc:'FL talent acquisition platforms. Executive contact database prospects.'},
-  {id:'attorneys',      name:'FL Attorneys — Foreclosure & RE', tag:'muniscore', count:'9,201',  desc:'Active FL law firms. Pre-qualified client pipeline via 38K MuniScore lien cases.'},
-  {id:'title_search',   name:'Title Search & Abstract Cos',     tag:'muniscore', count:'1,847',  desc:'FL title companies. MuniScore catches liens they miss on every closing.'},
-  {id:'hard_money',     name:'Hard Money & Bridge Lenders',     tag:'muniscore', count:'2,103',  desc:'FL private lenders. 38K distressed property owners — capital-starved borrowers.'},
-  {id:'sba_lenders',    name:'Commercial Lenders & SBA Origs',  tag:'muniscore', count:'3,287',  desc:'FL commercial banking + SBA. Business owner pipeline + MuniScore deals.'},
-  {id:'pc_insurance',   name:'P&C Insurance Carriers',          tag:'muniscore', count:'1,209',  desc:'Property & casualty insurers. 38,500 distressed FL properties at $22/lead.'},
-  {id:'msp',            name:'IT Support & MSP Companies',      tag:'daas',      count:'8,402',  desc:'FL managed service providers. 50K+ SMBs in territory. 90-day rebuy cycle.'},
-  {id:'alarm',          name:'Alarm & Security Systems',        tag:'daas',      count:'4,103',  desc:'Commercial alarm companies. MuniScore vacant property crossover.'},
-  {id:'wealth_mgmt',    name:'Wealth Management & Advisors',    tag:'daas',      count:'8,051',  desc:'FL registered investment advisors. HNW business owner prospect pipeline.'},
-  {id:'staffing_all',   name:'Staffing & Recruiting Agencies',  tag:'daas',      count:'5,847',  desc:'FL staffing firms. Direct hiring manager pipeline — bypasses LinkedIn.'},
-  {id:'digital_mktg',   name:'Digital Marketing Agencies',      tag:'daas',      count:'11,203', desc:'FL marketing agencies. White-label data reseller prospects.'},
-  {id:'saas_all',       name:'SaaS & Software Companies',       tag:'daas',      count:'21,452', desc:'FL software companies. Clean executive pipeline — no shared leads.'},
-  {id:'cre_all',        name:'Commercial Real Estate Brokers',  tag:'daas',      count:'9,808',  desc:'FL CRE brokerage firms. MuniScore off-market distressed pipeline.'},
-  {id:'developers',     name:'Real Estate Developers',          tag:'daas',      count:'8,075',  desc:'FL commercial developers. MuniScore identifies distressed sites before MLS.'},
-  {id:'mortgage_all',   name:'Mortgage Brokers & Lenders',      tag:'daas',      count:'6,203',  desc:'FL mortgage originators. Business owner refinance and commercial loan pipeline.'},
-  {id:'banking',        name:'Banks & Credit Unions',           tag:'daas',      count:'4,891',  desc:'FL commercial banking. Business owner deposit and lending pipeline.'},
-  {id:'ins_agents',     name:'Insurance Brokers & Agents',      tag:'daas',      count:'7,104',  desc:'FL independent insurance agents. Commercial P&C prospect pipeline.'},
-  {id:'physicians',     name:'Physicians & Medical Clinics',    tag:'daas',      count:'10,729', desc:'FL medical practices. Corporate health account and group plan pipeline.'},
-  {id:'dental',         name:'Dental & Optical Practices',      tag:'daas',      count:'5,203',  desc:'FL dental offices. Corporate group dental plan decision-makers.'},
-  {id:'gc',             name:'General Contractors',             tag:'daas',      count:'16,075', desc:'FL GC firms. Commercial developer and property manager direct contacts.'},
-  {id:'hvac_all',       name:'HVAC & Mechanical Contractors',   tag:'daas',      count:'8,901',  desc:'FL HVAC companies. Commercial property manager contract pipeline.'},
-  {id:'pawn',           name:'Pawn Shops & Coin Dealers',       tag:'vp',        count:'1,847',  desc:'FL pawn/precious metals dealers. VP Platform authentication + buyer contacts.'},
-  {id:'auctions',       name:'Auction Houses & Estate Sales',   tag:'vp',        count:'2,103',  desc:'FL auction houses. Blockchain lot certification + buyer contact database.'},
-  {id:'art_galleries',  name:'Art Galleries & Fine Art Dealers',tag:'vp',        count:'1,204',  desc:'FL art market. HNW collector contacts + VP Platform provenance certification.'},
-  {id:'prop_tax',       name:'Property Tax Consultants',        tag:'muniscore', count:'987',    desc:'FL tax appeal firms. MuniScore distressed owners — pre-qualified clients.'},
-  {id:'tax_resolution', name:'Tax Resolution Firms',            tag:'muniscore', count:'2,401',  desc:'FL tax resolution. Distressed business owners under active enforcement.'},
-];
-
-// SAMPLE PREVIEW DATA (5 rows per segment for preview modal)
-const PREVIEW_SAMPLES = {
-  attorneys:    [{First:'James',Last:'Morrison',Title:'Managing Partner',Company:'Morrison & Patel LLP',Email:'j.morrison@morrisonpatel.com',City:'Tampa',Specialty:'Foreclosure'},{First:'Sandra',Last:'Chen',Title:'Partner',Company:'Chen Law Group PA',Email:'schen@chenlawgroup.com',City:'Orlando',Specialty:'Real Estate Law'},{First:'Robert',Last:'Kaufman',Title:'Senior Attorney',Company:'Kaufman Foreclosure Attorneys',Email:'rkaufman@kaufmanlaw.com',City:'Miami',Specialty:'Foreclosure'},{First:'Maria',Last:'Gonzalez',Title:'Principal',Company:'Gonzalez & Associates PA',Email:'mgonzalez@gonzalezlaw.com',City:'Jacksonville',Specialty:'Lien Law'},{First:'David',Last:'Thompson',Title:'Partner',Company:'Thompson Lien Law PL',Email:'dthompson@thompsonlienlaw.com',City:'Fort Lauderdale',Specialty:'Real Estate'}],
-  wealth_mgmt:  [{First:'Jonathan',Last:'Reed',Title:'Managing Director',Company:'Raymond James',Email:'j.reed@raymondjames.com',City:'St Petersburg',AUM:'$250M+'},{First:'Ashley',Last:'Park',Title:'VP Investments',Company:'Royal Alliance Associates',Email:'apark@royalalliance.com',City:'Tampa',AUM:'$150M+'},{First:'Michael',Last:'Torres',Title:'Senior Advisor',Company:'Merrill Lynch Wealth Mgmt',Email:'m.torres@ml.com',City:'Boca Raton',AUM:'$500M+'},{First:'Patricia',Last:'Winters',Title:'President',Company:'Suncoast Equity Management',Email:'pwinters@suncoasteq.com',City:'Sarasota',AUM:'$75M+'},{First:'Craig',Last:'Shelton',Title:'Principal',Company:'Shelton Financial Services',Email:'cshelton@sheltonfinancial.com',City:'Naples',AUM:'$200M+'}],
-  private_equity:[{First:'Andrew',Last:'Cole',Title:'Managing Partner',Company:'Florida Growth Capital',Email:'acole@floridagrowth.com',City:'Miami',Focus:'Lower Middle Market'},{First:'Jessica',Last:'Monroe',Title:'Principal',Company:'Sunbelt Ventures LLC',Email:'jmonroe@sunbeltvp.com',City:'Tampa',Focus:'Tech/SaaS'},{First:'Richard',Last:'Patel',Title:'Partner',Company:'Southeast Capital Partners',Email:'rpatel@secapital.com',City:'Orlando',Focus:'Healthcare'},{First:'Karen',Last:'Fitzgerald',Title:'Managing Director',Company:'Gulf Coast Equity',Email:'kfitz@gulfcoastequity.com',City:'Fort Myers',Focus:'Real Estate'},{First:'Thomas',Last:'Nguyen',Title:'President',Company:'Florida Family Office',Email:'tnguyen@flfamilyoffice.com',City:'Naples',Focus:'Diversified'}],
-  saas_all:     [{First:'Chris',Last:'Walters',Title:'CEO',Company:'DataPlex Solutions',Email:'c.walters@dataplex.io',City:'Tampa',Revenue:'$5M-$10M'},{First:'Amy',Last:'Zheng',Title:'VP Sales',Company:'CloudBridge FL Inc',Email:'azheng@cloudbridge.com',City:'Miami',Revenue:'$10M-$25M'},{First:'Marcus',Last:'Brown',Title:'Founder',Company:'GrowthStack Software',Email:'mbrown@growthstack.com',City:'Orlando',Revenue:'$1M-$5M'},{First:'Rachel',Last:'Kim',Title:'CRO',Company:'Vertex Analytics',Email:'rkim@vertexanalytics.com',City:'Jacksonville',Revenue:'$25M+'},{First:'Sean',Last:'Murphy',Title:'CEO',Company:'Nexus SaaS Group',Email:'smurphy@nexussaas.com',City:'Boca Raton',Revenue:'$5M-$10M'}],
+var CLIENTS = {
+  "steve.localreach@gmail.com": {
+    pass:"oip2026admin", name:"Steve Sloan", company:"Ocala Innovation Partners",
+    tier:"ENTERPRISE", tierDesc:"All verticals · 3.7M records",
+    renewal:"Lifetime", segments:"all", totalRecords:3700000
+  },
+  "dee@tdelante.com": {
+    pass:"dee2026", name:"Dee Clarke", company:"T De Lante",
+    tier:"TIER 2 MONTHLY", tierDesc:"PE · SaaS · CRE · SBA Lenders",
+    renewal:"2026-07-15",
+    segments:["private_equity","saas_all","sba_lenders","cre_all","developers","hard_money"],
+    totalRecords:47890
+  },
+  "demo@lawfirm.com": {
+    pass:"muniscore2026", name:"Demo Client", company:"Law Office Demo",
+    tier:"MUNISCORE ATTORNEY", tierDesc:"38,500 FL lien cases",
+    renewal:"2026-07-15", segments:["attorneys","title_search","hard_money"],
+    totalRecords:38500
+  },
+  "demo@mspfirm.com": {
+    pass:"msp2026", name:"Demo Client", company:"MSP Demo",
+    tier:"TIER 2 IT/MSP", tierDesc:"8,400+ FL SMBs",
+    renewal:"2026-07-15", segments:["msp","alarm","saas_all"],
+    totalRecords:21890
+  }
 };
 
-// Default sample for segments without specific data
-const DEFAULT_SAMPLE = [
-  {First:'Contact',Last:'Name',Title:'Decision Maker',Company:'Sample Company FL',Email:'contact@company.com',City:'Tampa',State:'FL'},
-  {First:'Business',Last:'Owner',Title:'President',Company:'Florida Business LLC',Email:'owner@flbusiness.com',City:'Orlando',State:'FL'},
-  {First:'Executive',Last:'Director',Title:'CEO',Company:'Sunshine State Corp',Email:'exec@sunshinestate.com',City:'Miami',State:'FL'},
-  {First:'Managing',Last:'Partner',Title:'Managing Partner',Company:'Gulf Coast Partners',Email:'mp@gulfcoast.com',City:'Naples',State:'FL'},
-  {First:'Senior',Last:'VP',Title:'Senior VP',Company:'Atlantic Ventures Inc',Email:'svp@atlanticventures.com',City:'Jacksonville',State:'FL'},
+var SEGS = [
+  {id:"private_equity",name:"Private Equity & VC Funds",tag:"daas",n:"2,847",d:"FL investment firms, family offices, VC funds. Direct partner contact."},
+  {id:"list_brokers",name:"List Brokers & Data Resellers",tag:"daas",n:"1,204",d:"FL data resellers. Wholesale licensing targets."},
+  {id:"mktg_platforms",name:"Marketing Automation Platforms",tag:"daas",n:"3,891",d:"CRM and marketing platforms. API data feed prospects."},
+  {id:"attorneys",name:"FL Attorneys — Foreclosure & RE",tag:"muni",n:"9,201",d:"Active FL law firms. Pre-qualified via 38K MuniScore lien cases."},
+  {id:"title_search",name:"Title Search & Abstract Cos",tag:"muni",n:"1,847",d:"FL title companies. MuniScore catches liens missed on every closing."},
+  {id:"hard_money",name:"Hard Money & Bridge Lenders",tag:"muni",n:"2,103",d:"FL private lenders. 38K distressed property owners."},
+  {id:"sba_lenders",name:"Commercial Lenders & SBA",tag:"muni",n:"3,287",d:"FL commercial banking + SBA. Business owner pipeline + MuniScore deals."},
+  {id:"pc_insurance",name:"P&C Insurance Carriers",tag:"muni",n:"1,209",d:"Property & casualty insurers. 38,500 distressed FL properties at $22/lead."},
+  {id:"msp",name:"IT Support & MSP Companies",tag:"daas",n:"8,402",d:"FL managed service providers. 50K+ SMBs. 90-day rebuy cycle."},
+  {id:"alarm",name:"Alarm & Security Systems",tag:"daas",n:"4,103",d:"Commercial alarm companies. MuniScore vacant property crossover."},
+  {id:"wealth_mgmt",name:"Wealth Management & Advisors",tag:"daas",n:"8,051",d:"FL registered investment advisors. HNW business owner prospects."},
+  {id:"staffing_all",name:"Staffing & Recruiting Agencies",tag:"daas",n:"5,847",d:"FL staffing firms. Direct hiring manager pipeline."},
+  {id:"saas_all",name:"SaaS & Software Companies",tag:"daas",n:"21,452",d:"FL software companies. Clean executive pipeline."},
+  {id:"cre_all",name:"Commercial Real Estate Brokers",tag:"daas",n:"9,808",d:"FL CRE brokerage. MuniScore off-market pipeline."},
+  {id:"developers",name:"Real Estate Developers",tag:"daas",n:"8,075",d:"FL commercial developers. MuniScore identifies distressed sites."},
+  {id:"physicians",name:"Physicians & Medical Clinics",tag:"daas",n:"10,729",d:"FL medical practices. Corporate health account pipeline."},
+  {id:"gc",name:"General Contractors",tag:"daas",n:"16,075",d:"FL GC firms. Commercial developer direct contacts."},
+  {id:"pawn",name:"Pawn Shops & Coin Dealers",tag:"vp",n:"1,847",d:"VP Platform authentication + buyer contacts."},
+  {id:"auctions",name:"Auction Houses & Estate Sales",tag:"vp",n:"2,103",d:"Blockchain lot certification + buyer database."}
 ];
 
-// ── CLIENT CONFIG ─────────────────────────────────────────
-const CLIENTS = {
-
-  // ── ADMIN ─────────────────────────────────────────────────
-  // Steve Sloan — full access
-  'steve.localreach@gmail.com:oip2026admin': {
-    name:        'Steve Sloan',
-    company:     'Ocala Innovation Partners',
-    tier:        'ENTERPRISE — FULL ACCESS',
-    tierDesc:    'All 74 verticals · 3.7M records · Admin view',
-    renewal:     'Lifetime',
-    segments:    'all',
-    totalRecords: 3700000,
-  },
-
-  // ── ACTIVE CLIENTS ─────────────────────────────────────────
-
-  // Dee Clarke — T De Lante
-  // Tier: Monthly Lease · PE/SaaS/CRE/Lender segments
-  // Signed: TBD · Rate: $1,500/mo
-  'dee@tdelante.com:dee2026': {
-    name:        'Dee Clarke',
-    company:     'T De Lante',
-    tier:        'TIER 2 — MONTHLY LEASE',
-    tierDesc:    'PE/VC · SaaS · Commercial Lenders · CRE · Hard Money',
-    renewal:     '2026-07-15',
-    segments:    ['private_equity', 'saas_all', 'sba_lenders',
-                  'cre_all', 'developers', 'hard_money'],
-    totalRecords: 47890,
-  },
-
-  // ── DEMO ACCOUNTS ──────────────────────────────────────────
-
-  // Attorney / MuniScore demo
-  'demo@lawfirm.com:muniscore2026': {
-    name:        'Demo Client',
-    company:     'Law Office Demo',
-    tier:        'MUNISCORE — ATTORNEY TIER',
-    tierDesc:    '38,500 active FL lien cases · Pre-qualified client pipeline',
-    renewal:     '2026-07-15',
-    segments:    ['attorneys', 'title_search', 'hard_money'],
-    totalRecords: 38500,
-  },
-
-  // MSP / IT demo
-  'demo@mspfirm.com:msp2026': {
-    name:        'Demo Client',
-    company:     'MSP Demo Access',
-    tier:        'TIER 2 — IT/MSP SEGMENT',
-    tierDesc:    '8,400+ FL SMBs · 90-day rebuy cycle',
-    renewal:     '2026-07-15',
-    segments:    ['msp', 'alarm', 'saas_all'],
-    totalRecords: 21890,
-  },
-
-  // ── TEMPLATE — COPY THIS TO ADD NEW CLIENTS ────────────────
-  //
-  // 'clientemail@company.com:theirpassword': {
-  //   name:        'First Last',
-  //   company:     'Company Name',
-  //   tier:        'TIER 2 — MONTHLY LEASE',
-  //   tierDesc:    'Brief description of what they licensed',
-  //   renewal:     '2026-08-15',           // or 'Lifetime'
-  //   segments:    ['attorneys', 'title_search'],
-  //   totalRecords: 9201,
-  // },
-
+var SAMPLES = {
+  attorneys:[
+    {First:"James",Last:"Morrison",Title:"Managing Partner",Company:"Morrison & Patel LLP",Email:"j.morrison@morrisonpatel.com",City:"Tampa"},
+    {First:"Sandra",Last:"Chen",Title:"Partner",Company:"Chen Law Group PA",Email:"schen@chenlawgroup.com",City:"Orlando"},
+    {First:"Robert",Last:"Kaufman",Title:"Sr Attorney",Company:"Kaufman Foreclosure Attorneys",Email:"rkaufman@kaufmanlaw.com",City:"Miami"},
+    {First:"Maria",Last:"Gonzalez",Title:"Principal",Company:"Gonzalez & Associates PA",Email:"mgonzalez@gonzalezlaw.com",City:"Jacksonville"},
+    {First:"David",Last:"Thompson",Title:"Partner",Company:"Thompson Lien Law PL",Email:"dthompson@thompsonlienlaw.com",City:"Fort Lauderdale"}
+  ],
+  private_equity:[
+    {First:"Andrew",Last:"Cole",Title:"Managing Partner",Company:"Florida Growth Capital",Email:"acole@floridagrowth.com",City:"Miami"},
+    {First:"Jessica",Last:"Monroe",Title:"Principal",Company:"Sunbelt Ventures LLC",Email:"jmonroe@sunbeltvp.com",City:"Tampa"},
+    {First:"Richard",Last:"Patel",Title:"Partner",Company:"Southeast Capital Partners",Email:"rpatel@secapital.com",City:"Orlando"},
+    {First:"Karen",Last:"Fitzgerald",Title:"Managing Director",Company:"Gulf Coast Equity",Email:"kfitz@gulfcoastequity.com",City:"Fort Myers"},
+    {First:"Thomas",Last:"Nguyen",Title:"President",Company:"Florida Family Office",Email:"tnguyen@flfamilyoffice.com",City:"Naples"}
+  ],
+  saas_all:[
+    {First:"Chris",Last:"Walters",Title:"CEO",Company:"DataPlex Solutions",Email:"c.walters@dataplex.io",City:"Tampa"},
+    {First:"Amy",Last:"Zheng",Title:"VP Sales",Company:"CloudBridge FL Inc",Email:"azheng@cloudbridge.com",City:"Miami"},
+    {First:"Marcus",Last:"Brown",Title:"Founder",Company:"GrowthStack Software",Email:"mbrown@growthstack.com",City:"Orlando"},
+    {First:"Rachel",Last:"Kim",Title:"CRO",Company:"Vertex Analytics",Email:"rkim@vertexanalytics.com",City:"Jacksonville"},
+    {First:"Sean",Last:"Murphy",Title:"CEO",Company:"Nexus SaaS Group",Email:"smurphy@nexussaas.com",City:"Boca Raton"}
+  ]
 };
 
-// ── STATE ────────────────────────────────────────────────────
-let currentClient = null;
-let downloadCount = 0;
+var DEF=[
+  {First:"Contact",Last:"Name",Title:"Decision Maker",Company:"Sample Company FL",Email:"contact@company.com",City:"Tampa"},
+  {First:"Business",Last:"Owner",Title:"President",Company:"Florida Business LLC",Email:"owner@flbusiness.com",City:"Orlando"},
+  {First:"Managing",Last:"Partner",Title:"Managing Partner",Company:"Gulf Coast Partners",Email:"mp@gulfcoast.com",City:"Naples"},
+  {First:"Executive",Last:"Director",Title:"CEO",Company:"Sunshine State Corp",Email:"exec@sunshinestate.com",City:"Miami"},
+  {First:"Senior",Last:"VP",Title:"Senior VP",Company:"Atlantic Ventures Inc",Email:"svp@atlanticventures.com",City:"Jacksonville"}
+];
 
-// ── LOGIN ────────────────────────────────────────────────────
-function doLogin() {
-  const email = document.getElementById('login-email').value.trim().toLowerCase();
-  const pass  = document.getElementById('login-pass').value.trim();
-  const key   = `${email}:${pass}`;
+var CL=null, DLC=0, curSeg=null;
 
-  // CLIENTS comes from clients.js loaded in <head>
-  const client = CLIENTS[key];
-
-  if (!client) {
-    document.getElementById('login-error').style.display = 'block';
-    return;
-  }
-
-  currentClient = { ...client, email };
-  document.getElementById('login-error').style.display = 'none';
-  showDashboard();
+function doLogin(){
+  var em=document.getElementById("em").value.trim().toLowerCase();
+  var pw=document.getElementById("pw").value.trim();
+  var c=CLIENTS[em];
+  document.getElementById("err").style.display=(c&&c.pass===pw)?"none":"block";
+  if(!c||c.pass!==pw) return;
+  CL=Object.assign({},c,{email:em});
+  showDash();
 }
 
-document.getElementById('login-pass').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doLogin();
-});
-document.getElementById('login-email').addEventListener('keydown', e => {
-  if (e.key === 'Enter') document.getElementById('login-pass').focus();
-});
+document.getElementById("loginbtn").onclick=doLogin;
+document.getElementById("pw").onkeydown=function(e){if(e.key==="Enter")doLogin();};
+document.getElementById("em").onkeydown=function(e){if(e.key==="Enter")document.getElementById("pw").focus();};
 
-// ── DASHBOARD ─────────────────────────────────────────────────
-function showDashboard() {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('dashboard').style.display = 'block';
-
-  const c = currentClient;
-  const first = c.name.split(' ')[0];
-
-  document.getElementById('topbar-name').textContent = `${c.name} · ${c.company}`;
-  document.getElementById('tier-name').textContent = c.tier;
-  document.getElementById('tier-desc').textContent = c.tierDesc;
-  document.getElementById('renewal-date').textContent = c.renewal;
-  document.getElementById('sidebar-records').textContent = c.totalRecords.toLocaleString();
-  document.getElementById('main-greeting').textContent =
-    `${first.toUpperCase()} — ${c.company.toUpperCase()}`;
-
-  animateCount('record-counter', c.totalRecords, 1800);
-  buildSegments();
+function showDash(){
+  document.getElementById("login").style.display="none";
+  document.getElementById("dash").style.display="block";
+  var f=CL.name.split(" ")[0];
+  document.getElementById("uname").textContent=CL.name+" · "+CL.company;
+  document.getElementById("tname").textContent=CL.tier;
+  document.getElementById("tdesc").textContent=CL.tierDesc;
+  document.getElementById("ren").textContent=CL.renewal;
+  document.getElementById("srec").textContent=CL.totalRecords.toLocaleString();
+  document.getElementById("greet").textContent=f.toUpperCase()+" — "+CL.company.toUpperCase();
+  countUp("rcnt",CL.totalRecords,1800);
+  buildSegs();
 }
 
-function animateCount(id, target, duration) {
-  const el = document.getElementById(id);
-  const start = Date.now();
-  const tick = () => {
-    const p = Math.min((Date.now()-start)/duration, 1);
-    const e = 1 - Math.pow(1-p, 3);
-    el.textContent = Math.floor(e * target).toLocaleString();
-    if (p < 1) requestAnimationFrame(tick);
-    else el.textContent = target.toLocaleString();
-  };
-  requestAnimationFrame(tick);
+function countUp(id,target,dur){
+  var el=document.getElementById(id),t0=Date.now();
+  (function tick(){
+    var p=Math.min((Date.now()-t0)/dur,1),e=1-Math.pow(1-p,3);
+    el.textContent=Math.floor(e*target).toLocaleString();
+    if(p<1)requestAnimationFrame(tick);else el.textContent=target.toLocaleString();
+  })();
 }
 
-// ── SEGMENTS ──────────────────────────────────────────────────
-function buildSegments() {
-  const c = currentClient;
-  const isAll = c.segments === 'all';
-  const allowed = isAll ? ALL_SEGMENTS.map(s=>s.id) : c.segments;
-
-  const container = document.getElementById('segments-container');
-  container.innerHTML = '';
-
-  const unlocked = ALL_SEGMENTS.filter(s => allowed.includes(s.id));
-  const locked   = ALL_SEGMENTS.filter(s => !allowed.includes(s.id));
-
-  if (unlocked.length) {
-    appendSection(container, `YOUR SEGMENTS — ${unlocked.length} ACTIVE`, unlocked, false);
-  }
-
-  if (locked.length && !isAll) {
-    appendSection(container, `AVAILABLE UPGRADES — ${locked.length} ADDITIONAL SEGMENTS`, locked.slice(0,6), true);
-  }
+function buildSegs(){
+  var isAll=CL.segments==="all";
+  var ok=isAll?SEGS.map(function(s){return s.id;}):CL.segments;
+  var ul=SEGS.filter(function(s){return ok.indexOf(s.id)>=0;});
+  var lk=SEGS.filter(function(s){return ok.indexOf(s.id)<0;});
+  var c=document.getElementById("segs");
+  c.innerHTML="";
+  if(ul.length)addSec(c,"YOUR SEGMENTS — "+ul.length+" ACTIVE",ul,false);
+  if(lk.length&&!isAll)addSec(c,"AVAILABLE UPGRADES",lk.slice(0,6),true);
 }
 
-function appendSection(container, label, segments, isLocked) {
-  const lbl = document.createElement('div');
-  lbl.className = 'section-label';
-  lbl.textContent = label;
-  container.appendChild(lbl);
-
-  const grid = document.createElement('div');
-  grid.className = 'segment-grid';
-  segments.forEach(seg => grid.appendChild(makeCard(seg, isLocked)));
-  container.appendChild(grid);
+function addSec(c,lbl,segs,locked){
+  var d=document.createElement("div");
+  d.className="seclbl";d.textContent=lbl;c.appendChild(d);
+  var g=document.createElement("div");g.className="grid";
+  segs.forEach(function(s){g.appendChild(mkCard(s,locked));});
+  c.appendChild(g);
 }
 
-function makeCard(seg, isLocked) {
-  const card = document.createElement('div');
-  card.className = 'segment-card';
-  const tagLabel = seg.tag === 'muniscore' ? 'MUNISCORE' : seg.tag === 'vp' ? 'VP PLATFORM' : 'DAAS';
-
-  card.innerHTML = `
-    <div class="seg-header">
-      <div class="seg-name">${seg.name}</div>
-      <div class="seg-tag ${seg.tag}">${tagLabel}</div>
-    </div>
-    <div class="seg-count">${seg.count}</div>
-    <div class="seg-desc">${seg.desc}</div>
-    <div class="seg-actions">
-      <button class="btn-download"
-        onclick="downloadSegment('${seg.id}','${seg.name}','${seg.count}')">
-        ↓ Download CSV
-      </button>
-      <button class="btn-preview"
-        onclick="previewSegment('${seg.id}','${seg.name}','${seg.count}')">
-        Preview
-      </button>
-    </div>
-    ${isLocked ? `
-      <div class="locked-overlay">
-        <div class="locked-icon">⊘</div>
-        <div class="locked-text">NOT IN YOUR LICENSE</div>
-        <a class="upgrade-link"
-           href="mailto:steve.localreach@gmail.com?subject=Upgrade — ${seg.name}">
-          REQUEST ACCESS →
-        </a>
-      </div>` : ''}
-  `;
-  return card;
+function mkCard(s,locked){
+  var el=document.createElement("div");el.className="seg";
+  var tl=s.tag==="muni"?"MUNISCORE":s.tag==="vp"?"VP PLATFORM":"DAAS";
+  el.innerHTML='<div class="seg-head"><div class="seg-name">'+s.name+'</div><div class="tag '+s.tag+'">'+tl+'</div></div>'+
+    '<div class="seg-num">'+s.n+'</div><div class="seg-desc">'+s.d+'</div>'+
+    '<div class="seg-btns">'+
+    '<button class="dl-btn" data-id="'+s.id+'" data-name="'+s.name+'" data-n="'+s.n+'">&#8595; Download CSV</button>'+
+    '<button class="prev-btn" data-id="'+s.id+'" data-name="'+s.name+'" data-n="'+s.n+'">Preview</button>'+
+    '</div>'+
+    (locked?'<div class="lock"><div style="font-size:20px;opacity:.3">&#8856;</div><div class="lock-txt">NOT IN YOUR LICENSE</div><a class="up-link" href="mailto:steve.localreach@gmail.com?subject=Upgrade-'+s.name+'">REQUEST ACCESS</a></div>':'');
+  el.querySelectorAll(".dl-btn").forEach(function(b){
+    b.addEventListener("click",function(){dlSeg(b.dataset.id,b.dataset.name,b.dataset.n);});
+  });
+  el.querySelectorAll(".prev-btn").forEach(function(b){
+    b.addEventListener("click",function(){prevSeg(b.dataset.id,b.dataset.name,b.dataset.n);});
+  });
+  return el;
 }
 
-// ── DOWNLOAD ──────────────────────────────────────────────────
-function downloadSegment(segId, segName, segCount) {
-  const sample = PREVIEW_SAMPLES[segId] || DEFAULT_SAMPLE;
-  const headers = Object.keys(sample[0]).join(',');
-  const rows = sample.map(r => Object.values(r).map(v=>`"${v}"`).join(',')).join('\n');
-  const note = `\n# SAMPLE PREVIEW — Full ${segCount} record dataset delivered separately\n# Contact Steve Sloan (407) 569-5117 for full dataset delivery`;
-
-  const blob = new Blob([`${headers}\n${rows}${note}`], {type:'text/csv'});
-  const url  = URL.createObjectURL(blob);
-  const a    = Object.assign(document.createElement('a'), {href:url, download:`OIP_${segId}_${new Date().toISOString().split('T')[0]}.csv`});
-  a.click();
-  URL.revokeObjectURL(url);
-
-  downloadCount++;
-  document.getElementById('dl-count').textContent = downloadCount;
-  addActivity(segName, segCount, 'CSV');
-  showToast(`↓ ${segName} — ${segCount} records`);
+function dlSeg(id,name,count){
+  var data=SAMPLES[id]||DEF;
+  var hdr=Object.keys(data[0]).join(",");
+  var rows=data.map(function(r){return Object.values(r).map(function(v){return'"'+v+'"';}).join(",");}).join("\n");
+  var csv=hdr+"\n"+rows+"\n# SAMPLE PREVIEW - Full "+count+" records delivered separately\n# Steve Sloan (407) 569-5117";
+  var blob=new Blob([csv],{type:"text/csv"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  a.href=url;a.download="OIP_"+id+"_"+new Date().toISOString().split("T")[0]+".csv";
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  DLC++;document.getElementById("dlc").textContent=DLC;
+  logAct(name,count,"CSV");showToast("Downloaded: "+name);
 }
 
-function addActivity(name, count, format) {
-  const tbody = document.getElementById('activity-log');
-  if (tbody.querySelector('[colspan]')) tbody.innerHTML = '';
-
-  const now   = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-  const today = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});
-  const row   = document.createElement('tr');
-  row.innerHTML = `<td class="gold">${name}</td><td>${count}</td><td class="muted">${format}</td><td class="muted">${today} · ${now}</td>`;
-  tbody.insertBefore(row, tbody.firstChild);
+function logAct(name,count,fmt){
+  var tb=document.getElementById("alog");
+  if(tb.querySelector("[colspan]"))tb.innerHTML="";
+  var now=new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"});
+  var today=new Date().toLocaleDateString("en-US",{month:"short",day:"numeric"});
+  var tr=document.createElement("tr");
+  tr.innerHTML='<td class="g">'+name+'</td><td>'+count+'</td><td class="m">'+fmt+'</td><td class="m">'+today+" "+now+'</td>';
+  tb.insertBefore(tr,tb.firstChild);
 }
 
-// ── PREVIEW ───────────────────────────────────────────────────
-function previewSegment(segId, segName, segCount) {
-  const data    = PREVIEW_SAMPLES[segId] || DEFAULT_SAMPLE;
-  const headers = Object.keys(data[0]);
-
-  document.getElementById('modal-title').textContent = `PREVIEW — ${segName.toUpperCase()}`;
-  document.getElementById('modal-dl-btn').onclick = () => {
-    downloadSegment(segId, segName, segCount);
-    closeModal();
-  };
-
-  document.getElementById('modal-content').innerHTML = `
-    <p class="preview-note">
-      Showing 5 sample records ·
-      Full dataset: <span style="color:var(--gold)">${segCount} verified contacts</span>
-    </p>
-    <table class="preview-table">
-      <thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
-      <tbody>
-        ${data.map(r=>`<tr>${headers.map(h=>`<td>${r[h]||'—'}</td>`).join('')}</tr>`).join('')}
-      </tbody>
-    </table>
-  `;
-
-  document.getElementById('preview-modal').classList.add('active');
+function prevSeg(id,name,count){
+  var data=SAMPLES[id]||DEF;
+  var hdr=Object.keys(data[0]);
+  curSeg={id:id,name:name,count:count};
+  document.getElementById("mtitl").textContent="PREVIEW: "+name.toUpperCase();
+  document.getElementById("mbdy").innerHTML=
+    '<p class="pnote">5 sample records - Full dataset: <span style="color:#c9a84c">'+count+' verified contacts</span></p>'+
+    '<table class="ptbl"><thead><tr>'+hdr.map(function(h){return'<th>'+h+'</th>';}).join('')+'</tr></thead><tbody>'+
+    data.map(function(r){return'<tr>'+hdr.map(function(h){return'<td>'+(r[h]||'')+' </td>';}).join('')+'</tr>';}).join('')+
+    '</tbody></table>';
+  document.getElementById("modal").classList.add("on");
 }
 
-function closeModal() {
-  document.getElementById('preview-modal').classList.remove('active');
+document.getElementById("mdl").onclick=function(){if(curSeg)dlSeg(curSeg.id,curSeg.name,curSeg.count);closeModal();};
+document.getElementById("mcls").onclick=closeModal;
+document.getElementById("mclose2").onclick=closeModal;
+document.getElementById("modal").onclick=function(e){if(e.target===this)closeModal();};
+function closeModal(){document.getElementById("modal").classList.remove("on");}
+
+function showToast(msg){
+  var t=document.getElementById("toast");
+  t.textContent=msg;t.classList.add("on");
+  setTimeout(function(){t.classList.remove("on");},3000);
 }
 
-document.getElementById('preview-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
-
-// ── TOAST ─────────────────────────────────────────────────────
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 3000);
-}
-
-// ── LOGOUT ────────────────────────────────────────────────────
-function doLogout() {
-  currentClient = null;
-  downloadCount = 0;
-  document.getElementById('login-email').value = '';
-  document.getElementById('login-pass').value = '';
-  document.getElementById('dashboard').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-}
+document.getElementById("logoutbtn").onclick=function(){
+  CL=null;DLC=0;
+  document.getElementById("em").value="";
+  document.getElementById("pw").value="";
+  document.getElementById("dash").style.display="none";
+  document.getElementById("login").style.display="flex";
+};
 </script>
 </body>
 </html>
