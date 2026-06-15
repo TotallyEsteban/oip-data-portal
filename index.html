@@ -212,6 +212,21 @@ var CLIENTS = {
     segments:["muniscore_contractor","prop_mgmt","ins_agents","pc_insurance",
               "developers","cre_all","hard_money","prop_tax","real_estate_inv","biz_brokers"],
     totalRecords:32743
+  },
+
+  // Jeff Husby — Regal & Nautique of Orlando
+  // Marine dealer demo — HNW boat buyer contacts + FOS/WWW circuit prospects
+  // Territory: Central FL, Coastal FL, Lake County, Orlando market
+  "jeff@orlandonautiques.com": {
+    pass:"nautique2026",
+    name:"Jeff Husby",
+    company:"Regal & Nautique of Orlando",
+    tier:"MARINE DEALER INTELLIGENCE",
+    tierDesc:"HNW Boat Buyer Contacts · Lakefront Property Owners · Exotic Car Owner Circuit",
+    renewal:"Demo Access",
+    segments:["marine_hnw","wealth_mgmt","private_equity","auto_dealers",
+              "marine","yacht","hospitality","aviation","cre_all","developers"],
+    totalRecords:58492
   }
 };
 
@@ -242,7 +257,17 @@ var SEGS = [
   {id:"real_estate_inv",name:"Real Estate Investors & Agents (Central FL)",tag:"daas",n:"8,401",
    d:"Flippers, buy-and-hold investors, listing agents in your 7-county region. All need roofing, cleanout, demo, or renovation work."},
   {id:"prop_mgmt_contractor",name:"Property Management — HOAs & Complexes",tag:"daas",n:"2,103",
-   d:"HOA operators, apartment complexes, commercial property managers. Ongoing maintenance contracts for roofing, cleanouts, and capital improvements."}
+   d:"HOA operators, apartment complexes, commercial property managers. Ongoing maintenance contracts for roofing, cleanouts, and capital improvements."},
+
+  // MARINE / JEFF HUSBY SEGMENTS
+  {id:"marine_hnw",name:"HNW Boat Buyer Contacts — Central & Coastal FL",tag:"daas",n:"14,203",
+   d:"High-net-worth business owners and investors across Lake County, Orange, Brevard, Pinellas, Collier, and coastal counties. The same income profile that buys a G23 Paragon. Lakefront and waterfront geography prioritized."},
+  {id:"marine",name:"Marine & Boat Industry Contacts",tag:"daas",n:"1,174",
+   d:"FL marine dealers, marinas, boat clubs, watersports operators, and marine service companies. Referral network and partnership prospects."},
+  {id:"yacht",name:"Yacht Charter & Luxury Marine",tag:"daas",n:"847",
+   d:"Yacht charter companies, luxury boat rental, sailing clubs. Shared HNW clientele — natural referral and co-marketing partners."},
+  {id:"auto_dealers",name:"Exotic & Luxury Auto Dealers",tag:"daas",n:"6,826",
+   d:"FL exotic car dealerships. Same buyer profile as your G23 customer. WWW circuit sponsors and referral network — the Lamborghini buyer is your Nautique buyer."}
 ];
 
 var SAMPLES = {
@@ -280,6 +305,20 @@ var SAMPLES = {
     {First:"Michael",Last:"Tran",Title:"Principal",Company:"Central FL Property Fund",Email:"mtran@cflpropertyfund.com",City:"Kissimmee",County:"Orange",Focus:"Multi-Family"},
     {First:"Susan",Last:"Garrett",Title:"Broker/Owner",Company:"Garrett Real Estate Group",Email:"sgarrett@garrettregroup.com",City:"DeLand",County:"Volusia",Focus:"Residential"},
     {First:"Thomas",Last:"Abrams",Title:"Investor",Company:"Abrams Capital Properties",Email:"tabrams@abramscap.com",City:"Eustis",County:"Lake",Focus:"Commercial Flip"}
+  ],
+  marine_hnw:[
+    {First:"Christopher",Last:"Vandermeer",Title:"CEO",Company:"Vandermeer Capital Group",Email:"cvandermeer@vandermeercap.com",City:"Windermere",County:"Orange",Income:"$2M+",Notes:"Lakefront property owner"},
+    {First:"Richard",Last:"Foxworth",Title:"Founder",Company:"Foxworth Enterprises LLC",Email:"rfoxworth@foxworthent.com",City:"Mount Dora",County:"Lake",Income:"$1.5M+",Notes:"Lake Harris waterfront"},
+    {First:"Margaret",Last:"Castellano",Title:"President",Company:"Castellano Group",Email:"mcastellano@castellanogroup.com",City:"Winter Park",County:"Orange",Income:"$3M+",Notes:"Chain of Lakes area"},
+    {First:"Andrew",Last:"Blackwood",Title:"Managing Partner",Company:"Blackwood Investments",Email:"ablackwood@blackwoodinvest.com",City:"Clermont",County:"Lake",Income:"$1M+",Notes:"Clermont chain of lakes"},
+    {First:"Victoria",Last:"Harrington",Title:"Owner",Company:"Harrington Holdings FL",Email:"vharrington@harringtonfl.com",City:"Satellite Beach",County:"Brevard",Income:"$2M+",Notes:"Intracoastal waterfront"}
+  ],
+  marine:[
+    {First:"Todd",Last:"Bernstein",Title:"Owner",Company:"Lake Harris Marina",Email:"tbernstein@lakeharrismarina.com",City:"Leesburg",County:"Lake",Type:"Marina"},
+    {First:"Paula",Last:"Nguyen",Title:"GM",Company:"Kissimmee Boat Club",Email:"pnguyen@kissimmeebc.com",City:"Kissimmee",County:"Osceola",Type:"Boat Club"},
+    {First:"Marcus",Last:"Ellison",Title:"Owner",Company:"Central FL Watersports",Email:"mellison@cflwatersports.com",City:"Sanford",County:"Seminole",Type:"Watersports"},
+    {First:"Diana",Last:"Prescott",Title:"President",Company:"Space Coast Marine",Email:"dprescott@spacecoastmarine.com",City:"Melbourne",County:"Brevard",Type:"Marine Service"},
+    {First:"Kevin",Last:"Stoddard",Title:"Owner",Company:"Orlando Yacht Services",Email:"kstoddard@orlandoyacht.com",City:"Orlando",County:"Orange",Type:"Yacht Service"}
   ]
 };
 
