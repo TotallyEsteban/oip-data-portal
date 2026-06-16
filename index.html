@@ -91,7 +91,7 @@ input:focus{border-color:#c9a84c}
 
 <div id="login">
   <div class="card">
-    <div class="eyebrow">OIP · Ocala Innovation Partners</div>
+    <div class="eyebrow">OIP · VOLTAGE EXPERIENTIAL</div>
     <div class="title">DATA PORTAL</div>
     <div class="sub">Secure client access — authorized users only</div>
     <label>Email / Access Code</label>
@@ -100,7 +100,7 @@ input:focus{border-color:#c9a84c}
     <input id="pw" type="password" placeholder="enter license key">
     <button class="btn" id="loginbtn">ACCESS PORTAL</button>
     <div class="err" id="err">Invalid credentials. Contact Steve Sloan (407) 569-5117</div>
-    <div class="foot">Ocala Innovation Partners · oipdata.com<br>Proprietary &amp; Confidential</div>
+    <div class="foot">Ocala Innovation Partners · voltageprovenance.com<br>Proprietary &amp; Confidential</div>
   </div>
 </div>
 
@@ -228,8 +228,6 @@ var CLIENTS = {
   },
 
   // Lisa Cottage-Ramnick & Mike — BURN by Rocky Patel, Mercato Naples
-  // Confirmed FOS sponsor · Naples Dec 6 event closed
-  // Territory: Collier, Lee, Charlotte, SW Florida — ultra HNW market
   "lisa@burnbyrockypatel.com": {
     pass:"burn2026",
     name:"Lisa & Mike",
@@ -240,6 +238,22 @@ var CLIENTS = {
     segments:["burn_hnw_naples","wealth_mgmt","private_equity","auto_dealers",
               "hospitality","restaurants","art_galleries","pawn","yacht","cre_all"],
     totalRecords:43847
+  },
+
+  // Joe Sabatini — Founder/President, Festivals of Speed + WWW Circuit
+  // Full access to sponsor pipeline data, FOS market contacts,
+  // luxury event attendee demographics, and circuit intelligence
+  "joe@festivalsofspeed.com": {
+    pass:"fos2026joe",
+    name:"Joe Sabatini",
+    company:"Festivals of Speed · WWW Circuit",
+    tier:"FOS CIRCUIT INTELLIGENCE — FOUNDER ACCESS",
+    tierDesc:"Sponsor Pipeline · HNW Event Markets · 6-City Circuit Demographics",
+    renewal:"Partner Access",
+    segments:["fos_sponsors","wealth_mgmt","auto_dealers","private_equity",
+              "burn_hnw_naples","marine_hnw","hospitality","yacht",
+              "art_galleries","cre_all","wealth_mgmt","ins_agents"],
+    totalRecords:187420
   }
 };
 
@@ -288,7 +302,19 @@ var SEGS = [
   {id:"hospitality",name:"Hotels, Resorts & Hospitality Groups",tag:"daas",n:"4,891",
    d:"SW Florida hotels, resorts, private clubs, and hospitality operators. Corporate event partnerships, private humidor programs, and group cigar experience packages."},
   {id:"restaurants",name:"Restaurants & Fine Dining",tag:"daas",n:"6,203",
-   d:"Naples and SW FL fine dining operators. After-dinner cigar program partnerships, cross-promotion with upscale dining venues in the Mercato area and beyond."}
+   d:"Naples and SW FL fine dining operators. After-dinner cigar program partnerships, cross-promotion with upscale dining venues in the Mercato area and beyond."},
+
+  // JOE SABATINI / FOS SEGMENTS
+  {id:"fos_sponsors",name:"FOS Circuit — Active Sponsor Pipeline",tag:"daas",n:"4,203",
+   d:"Active and prospective FOS and WWW sponsors across all 6 circuit markets: Naples, Orlando, Virginia Beach, Howey-in-the-Hills, St. Pete, and future venues. Luxury brands, spirits, watches, automotive, financial, and lifestyle categories. Verified contacts, direct email."},
+  {id:"fos_orlando",name:"FOS Market — Orlando HNW Contacts",tag:"daas",n:"26,388",
+   d:"Grade A luxury-scored HNW contacts in the Orlando market. Verified exotic car owners, investors, and business operators — the exact WWW and FOS event audience for Mercedes-Benz of South Orlando June 25."},
+  {id:"fos_stpete",name:"FOS Market — St. Pete & Tampa Bay HNW",tag:"daas",n:"31,204",
+   d:"Grade A contacts across Pinellas and Hillsborough counties. Maserati St. Pete July 25 event audience — 200 invitation-only exotic car owners drawn from this verified pool."},
+  {id:"fos_naples",name:"FOS Market — Naples & SW Florida HNW",tag:"daas",n:"11,204",
+   d:"Ultra-HNW Collier, Lee, and Charlotte county contacts. FOS Naples circuit market — highest per-capita income market in Florida."},
+  {id:"fos_howey",name:"FOS Market — Howey-in-the-Hills & Mission Inn",tag:"daas",n:"8,847",
+   d:"Lake County and surrounding market contacts for Mission Inn circuit events. Lakefront property owners, Central FL HNW business operators."}
 ];
 
 var SAMPLES = {
@@ -340,6 +366,13 @@ var SAMPLES = {
     {First:"Marcus",Last:"Ellison",Title:"Owner",Company:"Central FL Watersports",Email:"mellison@cflwatersports.com",City:"Sanford",County:"Seminole",Type:"Watersports"},
     {First:"Diana",Last:"Prescott",Title:"President",Company:"Space Coast Marine",Email:"dprescott@spacecoastmarine.com",City:"Melbourne",County:"Brevard",Type:"Marine Service"},
     {First:"Kevin",Last:"Stoddard",Title:"Owner",Company:"Orlando Yacht Services",Email:"kstoddard@orlandoyacht.com",City:"Orlando",County:"Orange",Type:"Yacht Service"}
+  ],
+  fos_sponsors:[
+    {First:"Christian",Last:"Meitz",Title:"Regional Manager",Company:"Southern Glazer's Wine & Spirits",Email:"cmeitz@southernglazers.com",City:"Tampa",Brands:"Pendleton/Crown Royal/Woodford/Maker's Mark",Status:"Active Pipeline"},
+    {First:"Alan",Last:"Chambers",Title:"VP Operations",Company:"John Craig Clothier",Email:"achambers@johncraig.com",City:"Orlando",Category:"Best Dressed Sponsor",Status:"WEC May 2 confirmed"},
+    {First:"Danya",Last:"Gerstein",Title:"Brand Partnerships",Company:"Robb Report",Email:"dgerstein@robbreport.com",City:"New York",Category:"Media Partner",Status:"Post-call collateral sent"},
+    {First:"Bridget",Last:"Belcher",Title:"VP Partnerships",Company:"Logic Controls",Email:"bbelcher@logiccontrols.com",City:"Tampa",Category:"Tech Stack",Status:"HOT — $15K call confirmed"},
+    {First:"Jeff",Last:"Husby",Title:"Owner/GM",Company:"Regal & Nautique of Orlando",Email:"jeff@orlandonautiques.com",City:"Orlando",Category:"Marine — Featured",Status:"HOT — Circuit partnership"}
   ],
   burn_hnw_naples:[
     {First:"William",Last:"Harrington III",Title:"Managing Partner",Company:"Harrington Capital Partners",Email:"wharrington@harringtoncap.com",City:"Naples",County:"Collier",Income:"$5M+",Notes:"Pelican Bay — private humidor prospect"},
